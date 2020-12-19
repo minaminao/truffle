@@ -48,6 +48,7 @@
     "graphql-tools": "^6.2.4",
     "jsondown": "^1.0.0",
     "leveldown": "^5.2.0",
+    "lodash": "^4.17.20",
     "module-alias": "^2.1.0",
     "pascal-case": "^2.0.1",
     "pluralize": "^8.0.0",
