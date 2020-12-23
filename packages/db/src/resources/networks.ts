@@ -24,6 +24,11 @@ export const networks: Definition<"networks"> = {
       historicBlock: Block!
       fork: Network
 
+      contractInstances(
+        networkAncestorsLimit: Int # default includes from all ancestors
+        excludedAncestorIds: [ID]
+      ): [ContractInstance]!
+
       ancestors(
         limit: Int, # default all
         includeSelf: Boolean # default false
@@ -72,6 +77,35 @@ export const networks: Definition<"networks"> = {
   `,
   resolvers: {
     Network: {
+      contractInstances: {
+        async resolve(
+          network,
+          { networkAncestorsLimit, excludedAncestorIds },
+          { workspace }
+        ) {
+          const ancestors = await resolveRelationship("ancestor")(
+            network,
+            { includeSelf: true, limit: networkAncestorsLimit },
+            { workspace }
+          );
+
+          let ids;
+          if (excludedAncestorIds) {
+            excludedAncestorIds = new Set(excludedAncestorIds);
+
+            ids = ancestors
+              .filter(({ id }) => !excludedAncestorIds.has(id))
+              .map(({ id }) => id);
+          } else {
+            ids = ancestors.map(({ id }) => id);
+          }
+
+          return await workspace.find("contractInstances", {
+            selector: { "network.id": { $in: ids } }
+          });
+        }
+      },
+
       ancestors: {
         resolve: resolveRelationship("ancestor")
       },
