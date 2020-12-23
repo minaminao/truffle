@@ -36,17 +36,12 @@ import {
  *      Networks from the earlier/later item in the pair, respectively.
  *
  *   4. Connect this series of network genealogy records with existing
- *      genealogy records in the system by querying for:
- *        (a) the closest known ancestor to our earliest given network, and
- *            (the "ancestor ancestor")
- *        (b) the closest known descendant to our latest given network
- *            ("the descendant descandant")
+ *      genealogy records in the system by querying our input networks one at a
+ *      time, looking for any known ancestor and/or any known descendant. If
+ *      either or both of these relations exist, add corresponding genealogy
+ *      inputs to our list.
  *
- *   5. If either/both relations exist from step 4, extend our collection of
- *      NetworkGenealogyInputs from step 3 with a corresponding
- *      NetworkGenealogyInput for each such relation
- *
- *   6. Load all inputs as NetworkGenealogy resources
+ *   5. Load all inputs as NetworkGenealogy resources
  *
  * Note: unlike other process functions in the larger Project.loadMigrate flow,
  * this does not use the batch abstraction, and thus does not return structured
